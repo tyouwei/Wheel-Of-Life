@@ -6,12 +6,13 @@ import SimpleMap from './components/SimpleMap';
 import type { Team } from './models/model';
 
 const REALMS = [
-  { name: 'Devas', color: 'oklch(62% 0.18 280)', bg: 'oklch(62% 0.18 280 / 0.15)' },
+  // Hex index order maps to positions: top-right, bottom-right, bottom, bottom-left, top-left, top.
   { name: 'Asuras', color: 'oklch(62% 0.18 200)', bg: 'oklch(62% 0.18 200 / 0.15)' },
-  { name: 'Humans', color: 'oklch(62% 0.18 140)', bg: 'oklch(62% 0.18 140 / 0.15)' },
-  { name: 'Animals', color: 'oklch(62% 0.18 85)', bg: 'oklch(62% 0.18 85  / 0.15)' },
   { name: 'Pretas', color: 'oklch(62% 0.18 35)', bg: 'oklch(62% 0.18 35  / 0.15)' },
   { name: 'Narakas', color: 'oklch(62% 0.18 320)', bg: 'oklch(62% 0.18 320 / 0.15)' },
+  { name: 'Animals', color: 'oklch(62% 0.18 85)', bg: 'oklch(62% 0.18 85  / 0.15)' },
+  { name: 'Humans', color: 'oklch(62% 0.18 140)', bg: 'oklch(62% 0.18 140 / 0.15)' },
+  { name: 'Devas', color: 'oklch(62% 0.18 280)', bg: 'oklch(62% 0.18 280 / 0.15)' },
 ] as const;
 
 const realmMap = Object.fromEntries(REALMS.map((r, i) => [r.name, i]));
@@ -42,10 +43,8 @@ export default function Home() {
     ]);
   }, []);
 
-  const sortedByRealm = [...teams].sort((a, b) => {
-    const ai = realmMap[a.realm] ?? 99;
-    const bi = realmMap[b.realm] ?? 99;
-    if (ai !== bi) return ai - bi;
+  const sortedByMerit = [...teams].sort((a, b) => {
+    if (a.merit !== b.merit) return b.merit - a.merit;
     return a.name.localeCompare(b.name);
   });
 
@@ -68,7 +67,7 @@ export default function Home() {
       <Scoreboard
         realms={REALMS}
         realmMap={realmMap}
-        sortedTeams={sortedByRealm}
+        sortedTeams={sortedByMerit}
         onRowClick={handleRowClick}
       />
       <SimpleMap realms={REALMS} activeGlowIdx={activeGlowIdx} />

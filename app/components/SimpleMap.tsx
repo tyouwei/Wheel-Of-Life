@@ -16,7 +16,7 @@ const PRECISION = 6;
 const q = (value: number) => Number(value.toFixed(PRECISION));
 
 const verts = Array.from({ length: 6 }, (_, i) => {
-  const a = (Math.PI / 180) * (60 * i - 90);
+  const a = (Math.PI / 180) * (60 * i - 60);
   return [q(CX + R * Math.cos(a)), q(CY + R * Math.sin(a))] as [number, number];
 });
 

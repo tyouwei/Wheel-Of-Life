@@ -1,0 +1,1 @@
+//TODO: Actual Bhavacakra Map instead of Hexagon -> Right click in page.tsx toggles between simple and complex map

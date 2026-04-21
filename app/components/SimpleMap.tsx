@@ -1,6 +1,7 @@
 'use client';
 
 import type { MapRealm } from '../models/model';
+import { MandalaInner, MandalaOuter } from './Mandala';
 
 type SimpleMapProps = {
   realms: readonly MapRealm[];
@@ -11,9 +12,12 @@ const CX = 300;
 const CY = 300;
 const R = 240;
 
+const PRECISION = 6;
+const q = (value: number) => Number(value.toFixed(PRECISION));
+
 const verts = Array.from({ length: 6 }, (_, i) => {
   const a = (Math.PI / 180) * (60 * i - 90);
-  return [CX + R * Math.cos(a), CY + R * Math.sin(a)] as [number, number];
+  return [q(CX + R * Math.cos(a)), q(CY + R * Math.sin(a))] as [number, number];
 });
 
 function HexSVG({ realms, activeGlowIdx }: SimpleMapProps) {
@@ -69,7 +73,7 @@ function HexSVG({ realms, activeGlowIdx }: SimpleMapProps) {
               y={ly}
               style={{
                 fontFamily: 'var(--font-space-grotesk), Space Grotesk, sans-serif',
-                fontSize: 18,
+                fontSize: 13,
                 fontWeight: 600,
                 fill: 'oklch(85% 0.005 60)',
                 letterSpacing: '0.04em',
@@ -105,12 +109,48 @@ export default function SimpleMap({ realms, activeGlowIdx }: SimpleMapProps) {
       position: 'relative',
       overflow: 'hidden',
     }}>
+      {/* Radial background glow */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse 60% 60% at 50% 50%, oklch(30% 0.05 260 / 0.18) 0%, transparent 70%)',
+        background:
+          'radial-gradient(ellipse 55% 55% at 50% 50%, oklch(22% 0.06 65 / 0.55) 0%, transparent 65%), ' +
+          'radial-gradient(ellipse 90% 90% at 50% 50%, oklch(16% 0.03 65 / 0.8) 0%, transparent 100%)',
         pointerEvents: 'none',
       }} />
+
+      {/* Outer mandala — slow clockwise rotation */}
+      <svg
+        viewBox="0 0 600 600"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{
+          position: 'absolute',
+          width: 'min(80vw, 90vh)',
+          height: 'min(80vw, 90vh)',
+          pointerEvents: 'none',
+          opacity: 0.18,
+          animation: 'mandalaRotate 120s linear infinite',
+        }}
+      >
+        <MandalaOuter />
+      </svg>
+
+      {/* Inner mandala — counter-rotates */}
+      <svg
+        viewBox="0 0 600 600"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{
+          position: 'absolute',
+          width: 'min(60vw, 70vh)',
+          height: 'min(60vw, 70vh)',
+          pointerEvents: 'none',
+          opacity: 0.12,
+          animation: 'mandalaRotate 80s linear infinite reverse',
+        }}
+      >
+        <MandalaInner />
+      </svg>
+
       <HexSVG realms={realms} activeGlowIdx={activeGlowIdx} />
     </div>
   );

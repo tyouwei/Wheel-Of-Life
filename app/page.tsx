@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Scoreboard from './components/Scoreboard';
 import SimpleMap from './components/SimpleMap';
+import type { Team } from './models/model';
 
 const REALMS = [
   { name: 'Devas', color: 'oklch(62% 0.18 280)', bg: 'oklch(62% 0.18 280 / 0.15)' },
@@ -15,29 +16,33 @@ const REALMS = [
 
 const realmMap = Object.fromEntries(REALMS.map((r, i) => [r.name, i]));
 
-const TEAMS = [
-  { name: 'Bodhisattvas', merit: 99, wisdom: 100, realm: 'Devas' },
-  { name: 'Siddhas', merit: 95, wisdom: 97, realm: 'Devas' },
-  { name: 'Devas', merit: 92, wisdom: 88, realm: 'Devas' },
-  { name: 'Vidyadharas', merit: 88, wisdom: 79, realm: 'Humans' },
-  { name: 'Ashura', merit: 84, wisdom: 71, realm: 'Asuras' },
-  { name: 'Gandharvas', merit: 80, wisdom: 82, realm: 'Asuras' },
-  { name: 'Narakas', merit: 77, wisdom: 90, realm: 'Narakas' },
-  { name: 'Apsaras', merit: 76, wisdom: 85, realm: 'Humans' },
-  { name: 'Manavas', merit: 70, wisdom: 76, realm: 'Humans' },
-  { name: 'Nagas', merit: 73, wisdom: 69, realm: 'Animals' },
-  { name: 'Sravakas', merit: 67, wisdom: 72, realm: 'Pretas' },
-  { name: 'Pretas', merit: 65, wisdom: 58, realm: 'Pretas' },
-  { name: 'Kinnaras', merit: 61, wisdom: 74, realm: 'Animals' },
-  { name: 'Tiryaks', merit: 55, wisdom: 63, realm: 'Animals' },
-  { name: 'Yakshas', merit: 48, wisdom: 51, realm: 'Pretas' },
-  { name: 'Rakshasas', merit: 42, wisdom: 37, realm: 'Narakas' },
-] as const;
-
 export default function Home() {
   const [activeGlowIdx, setActiveGlowIdx] = useState<number | null>(null);
+  const [teams, setTeams] = useState<Team[]>([]);
 
-  const sortedByRealm = [...TEAMS].sort((a, b) => {
+  useEffect(() => {
+    //TODO: Fetch teams from Backend API
+    setTeams([
+      { name: 'Bodhisattvas', merit: 99, wisdom: 100, realm: 'Devas' },
+      { name: 'Siddhas', merit: 95, wisdom: 97, realm: 'Devas' },
+      { name: 'Devas', merit: 92, wisdom: 88, realm: 'Devas' },
+      { name: 'Vidyadharas', merit: 88, wisdom: 79, realm: 'Humans' },
+      { name: 'Ashura', merit: 84, wisdom: 71, realm: 'Asuras' },
+      { name: 'Gandharvas', merit: 80, wisdom: 82, realm: 'Asuras' },
+      { name: 'Narakas', merit: 77, wisdom: 90, realm: 'Narakas' },
+      { name: 'Apsaras', merit: 76, wisdom: 85, realm: 'Humans' },
+      { name: 'Manavas', merit: 70, wisdom: 76, realm: 'Humans' },
+      { name: 'Nagas', merit: 73, wisdom: 69, realm: 'Animals' },
+      { name: 'Sravakas', merit: 67, wisdom: 72, realm: 'Pretas' },
+      { name: 'Pretas', merit: 65, wisdom: 58, realm: 'Pretas' },
+      { name: 'Kinnaras', merit: 61, wisdom: 74, realm: 'Animals' },
+      { name: 'Tiryaks', merit: 55, wisdom: 63, realm: 'Animals' },
+      { name: 'Yakshas', merit: 48, wisdom: 51, realm: 'Pretas' },
+      { name: 'Rakshasas', merit: 42, wisdom: 37, realm: 'Narakas' },
+    ]);
+  }, []);
+
+  const sortedByRealm = [...teams].sort((a, b) => {
     const ai = realmMap[a.realm] ?? 99;
     const bi = realmMap[b.realm] ?? 99;
     if (ai !== bi) return ai - bi;

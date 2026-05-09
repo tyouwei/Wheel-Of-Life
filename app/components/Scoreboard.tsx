@@ -1,12 +1,12 @@
 'use client';
 
 import Row from './row';
-import type { Realm, Team } from '../models/model';
+import type { Realm } from '../models/model';
+import { useGameStore } from '../store/useGameStore';
 
 type ScoreboardProps = {
   realms: readonly Realm[];
   realmMap: Record<string, number>;
-  sortedTeams: readonly Team[];
 };
 
 const COLUMNS: ReadonlyArray<{
@@ -21,11 +21,12 @@ const COLUMNS: ReadonlyArray<{
   { key: 'wisdom', label: 'Wisdom', align: 'right', isLast: true },
 ];
 
-export default function Scoreboard({
-  realms,
-  realmMap,
-  sortedTeams,
-}: ScoreboardProps) {
+export default function Scoreboard({ realms, realmMap }: ScoreboardProps) {
+  const teams = useGameStore((s) => s.teams);
+  const sortedTeams = [...teams].sort((a, b) => {
+    if (a.merit !== b.merit) return b.merit - a.merit;
+    return a.name.localeCompare(b.name);
+  });
   return (
     <div style={{
       width: '33%',

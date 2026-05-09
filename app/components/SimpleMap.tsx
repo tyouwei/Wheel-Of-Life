@@ -1,11 +1,12 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import type { MapRealm } from '../models/model';
 import { MandalaInner, MandalaOuter } from './Mandala';
+import { useGameStore } from '../store/useGameStore';
 
 type SimpleMapProps = {
   realms: readonly MapRealm[];
-  activeGlowIdx: number | null;
 };
 
 const CX = 300;
@@ -20,7 +21,7 @@ const verts = Array.from({ length: 6 }, (_, i) => {
   return [q(CX + R * Math.cos(a)), q(CY + R * Math.sin(a))] as [number, number];
 });
 
-function HexSVG({ realms, activeGlowIdx }: SimpleMapProps) {
+function HexSVG({ realms, activeGlowIdx }: { realms: readonly MapRealm[]; activeGlowIdx: number | null }) {
   return (
     <svg
       id="hex-svg"
@@ -99,7 +100,17 @@ function HexSVG({ realms, activeGlowIdx }: SimpleMapProps) {
   );
 }
 
-export default function SimpleMap({ realms, activeGlowIdx }: SimpleMapProps) {
+export default function SimpleMap({ realms }: SimpleMapProps) {
+  const activeTeam = useGameStore((s) => s.activeTeam);
+  const activeGlowIdx = activeTeam ? realms.findIndex((r) => r.name === activeTeam.realm) : null;
+  const prevGlowIdx = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (activeGlowIdx === null || activeGlowIdx === prevGlowIdx.current) return;
+    prevGlowIdx.current = activeGlowIdx;
+    new Audio('/assets/promote.mp3').play().catch(console.error);
+  }, [activeGlowIdx]);
+
   return (
     <div style={{
       flex: 1,

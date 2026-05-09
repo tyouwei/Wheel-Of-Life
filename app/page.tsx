@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Scoreboard from './components/Scoreboard';
 import SimpleMap from './components/SimpleMap';
 import type { Team } from './models/model';
+import { useGameStore } from './store/useGameStore';
 
 const REALMS = [
   // Hex index order maps to positions: top-right, bottom-right, bottom, bottom-left, top-left, top.
@@ -18,11 +19,9 @@ const REALMS = [
 const realmMap = Object.fromEntries(REALMS.map((r, i) => [r.name, i]));
 
 export default function Home() {
-  const [activeGlowIdx, setActiveGlowIdx] = useState<number | null>(null);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const { setTeams, setActiveTeam } = useGameStore();
 
   useEffect(() => {
-    //Get Teams
     const fetchTeams = () =>
       fetch('http://localhost:8000/team')
         .then((res) => res.json())
@@ -35,7 +34,7 @@ export default function Home() {
     const fetchActiveTeam = () =>
       fetch('http://localhost:8000/team/active')
         .then((res) => res.json())
-        .then((data: Team) => setActiveGlowIdx(realmMap[data.realm] ?? null))
+        .then((data: Team) => setActiveTeam(data))
         .catch(console.error);
 
     fetchActiveTeam();
@@ -47,11 +46,6 @@ export default function Home() {
     };
   }, []);
 
-  const sortedByMerit = [...teams].sort((a, b) => {
-    if (a.merit !== b.merit) return b.merit - a.merit;
-    return a.name.localeCompare(b.name);
-  });
-
   return (
     <div
       style={{
@@ -62,12 +56,8 @@ export default function Home() {
         fontFamily: 'var(--font-space-grotesk), Space Grotesk, sans-serif',
       }}
     >
-      <Scoreboard
-        realms={REALMS}
-        realmMap={realmMap}
-        sortedTeams={sortedByMerit}
-      />
-      <SimpleMap realms={REALMS} activeGlowIdx={activeGlowIdx} />
+      <Scoreboard realms={REALMS} realmMap={realmMap} />
+      <SimpleMap realms={REALMS} />
     </div>
   );
 }

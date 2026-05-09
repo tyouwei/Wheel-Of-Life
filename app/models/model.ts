@@ -27,5 +27,4 @@ export type RowProps = {
   index: number;
   realm: Realm;
   isLast: boolean;
-  onRowClick: (realmName: string) => void;
 };

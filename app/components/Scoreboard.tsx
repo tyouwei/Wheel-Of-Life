@@ -7,7 +7,6 @@ type ScoreboardProps = {
   realms: readonly Realm[];
   realmMap: Record<string, number>;
   sortedTeams: readonly Team[];
-  onRowClick: (realmName: string) => void;
 };
 
 const COLUMNS: ReadonlyArray<{
@@ -26,7 +25,6 @@ export default function Scoreboard({
   realms,
   realmMap,
   sortedTeams,
-  onRowClick,
 }: ScoreboardProps) {
   return (
     <div style={{
@@ -111,7 +109,6 @@ export default function Scoreboard({
                   index={i}
                   realm={realm}
                   isLast={i === sortedTeams.length - 1}
-                  onRowClick={onRowClick}
                 />
               );
             })}

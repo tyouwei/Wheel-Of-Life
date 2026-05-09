@@ -8,17 +8,15 @@ const TOP_RANK_COLORS: Record<number, RankColors> = {
   3: { bg: 'var(--bronze-dim)', hoverBg: 'oklch(66% 0.12 55 / 0.15)', rankBg: 'var(--bronze)', rankColor: 'oklch(20% 0.06 55)', nameColor: 'var(--bronze)' },
 };
 
-export default function Row({ team, rank, index, realm, isLast, onRowClick }: RowProps) {
+export default function Row({ team, rank, index, realm, isLast }: RowProps) {
   const isTop = rank <= 3;
   const topColors = isTop ? TOP_RANK_COLORS[rank] : null;
 
   return (
     <tr
-      onClick={() => onRowClick(team.realm)}
       style={{
         background: topColors?.bg,
         borderBottom: isLast ? 'none' : '1px solid oklch(20% 0.008 60)',
-        cursor: 'pointer',
         animationName: 'fadeRow',
         animationDuration: '0.3s',
         animationTimingFunction: 'ease',
